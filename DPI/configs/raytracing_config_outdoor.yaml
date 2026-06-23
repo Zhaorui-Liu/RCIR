@@ -1,0 +1,65 @@
+conditioning:
+  method:  rt-ps+ #ps+ #
+  params:
+    scale_method: paper
+    rho_min: 0.1
+    rho_max: 1.0
+    rho_transition: 0.6
+    joint_optimization_start: 0.8
+    grad_clip: 0.1
+    spp: 16
+    use_log: false
+    
+data:
+  name: ffhq
+  root: ./data/streetlearn  
+
+measurement:
+  operator:
+    name: raytracing-hotdog-hdr
+    scene_name: hotdog
+    image_path: ./data/hotdog/images
+    ldr: false
+    n_images: 60
+    
+    scene_path: ./data/hotdog/hotdog_synthetic.xml
+    camera_path: ./data/hotdog/camera.xml
+    illumi_gamma: 2.4
+    illumi_scale: 1.0
+    illumi_normalize: 0.5
+    texture_res: 256
+    param_keys:
+      basecolor: OBJMesh.bsdf.base_color.data
+      roughness: OBJMesh.bsdf.roughness.data
+      metallic: OBJMesh.bsdf.metallic.data
+      normal:
+    init_values:
+      basecolor: 0.01
+      roughness: 0.1
+      metallic: 0.1
+      normal: [0.5, 0.5, 1.0]
+    prior:
+      albedo_path:
+      normal_path:
+      normal_space: rgb01
+      use_scene_roughness_init: false
+      use_scene_metallic_init: false
+      use_scene_normal_init: false
+    optimizer:
+      lr: 0.01
+      basecolor_lr: 0.01
+      roughness_lr: 0.01
+      metallic_lr: 0.01
+      normal_lr: 0.01
+    relighting:
+      enabled: true
+      lambda_initial: 0.2
+      lambda_final: 0.5
+      rank_weight: 1.0
+      image_weight: 1.0
+      env_shift: 64
+      spp: 8
+    
+  noise: 
+    name: gaussian
+    sigma: 0.05
